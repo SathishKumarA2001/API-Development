@@ -6,15 +6,21 @@
 
         public $data = "";
 
-        const DB_SERVER = "mysql.selfmade.ninja";
-        const DB_USER = "chesa";
-        const DB_PASSWORD = "chesathish";
-        const DB = "chesa_api_db";
+        // private DB_SERVER = "mysql.selfmade.ninja";
+        // private DB_USER = "chesa";
+        // private DB_PASSWORD = "chesathish";
+        // private DB = "chesa_api_db";
 
         private $db = NULL;
 
         public function __construct(){
             parent::__construct();                // Init parent contructor
+            $config_json = file_get_contents('../../env.json');
+            $config = json_decode($config_json, true);
+            $this->DB_SERVER = $config['server'];
+            $this->DB_USER = $config['username'];
+            $this->DB_PASSWORD = $config['password'];
+            $this->DB_NAME = $config['database'];
             $this->dbConnect();                    // Initiate Database connection
         }
 
@@ -25,7 +31,7 @@
             if ($this->db != NULL) {
 				return $this->db;
 			} else {
-				$this->db = mysqli_connect(self::DB_SERVER,self::DB_USER,self::DB_PASSWORD, self::DB);
+				$this->db = mysqli_connect($this->DB_SERVER,$this->DB_USER,$this->DB_PASSWORD, $this->DB_NAME);
 				if (!$this->db) {
 					die("Connection failed: ".mysqli_connect_error());
 				} else {
@@ -33,6 +39,7 @@
 				}
 			}
         }
+
 
         /*
          * Public method for access api.
